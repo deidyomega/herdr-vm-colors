@@ -1,4 +1,4 @@
-// Context window use of the Claude Code agent in view: "149.4k / 1M", a bar,
+// Context window use of the Claude Code or Codex agent in view: "149.4k / 1M", a bar,
 // and a little line of how it grew over the session (drops are compactions).
 // Reads the session's transcript on the agent's own machine with reader.py.
 // Colored with the agent's space color (see vm-spaces).
@@ -7,8 +7,10 @@ import { View, div, PathBuilder } from "gpui-kit";
 import { v_flex, h_flex } from "gpui-base";
 import { agents, hc, exec, readTextFile, appHome, theme, shared, checking } from "herdr";
 
-// Claude Code doesn't record the window size; current models run with 1M.
+// Claude Code doesn't record the window size; current Claude models run with 1M.
+// Codex records its own (model_context_window), which wins.
 const WINDOW = 1_000_000;
+const APPS = new Set(["claude-code", "codex"]);
 // While an agent works, look again this often (ms); otherwise on each change of its status.
 const WORKING_EVERY = 15000;
 
@@ -25,7 +27,7 @@ function tokens(n) {
   return String(n);
 }
 
-const agentInView = () => agents().find((a) => a.focused && a.app === "claude-code") ?? null;
+const agentInView = () => agents().find((a) => a.focused && APPS.has(a.app)) ?? null;
 
 export default class Context extends View {
   init(_props, cx) {
@@ -49,11 +51,11 @@ export default class Context extends View {
     const stale = a.status === "working" && (!last || Date.now() - last.at > WORKING_EVERY);
     if (key === this.key && !stale) return;
     this.key = key;
-    this.fetch(a.address, cx);
+    this.fetch(a.address, a.app, cx);
     cx.notify();
   }
 
-  fetch(address, cx) {
+  fetch(address, app, cx) {
     if (this.busy) return;
     this.busy = true;
     cx.spawn(async (cx) => {
@@ -63,7 +65,7 @@ export default class Context extends View {
         const pid = JSON.parse(got.stdout)?.foreground?.pid;
         if (pid && this.script) {
           const on = address.includes("/") ? address.split("/")[0] : null;
-          const r = await exec("python3", ["-c", this.script, String(pid)], { on, timeout: 20000 });
+          const r = await exec("python3", ["-c", this.script, String(pid), app], { on, timeout: 20000 });
           const d = JSON.parse(r.stdout);
           if (d.used != null) this.data[address] = { ...d, at: Date.now() };
         }
@@ -89,17 +91,18 @@ export default class Context extends View {
     const a = agentInView();
     const d = a && this.data[a.address];
     const shell = v_flex().size_full().bg(t.chrome).border_t(1).border_color(t.border).px(16).pt(9).pb(8).gap(6).text_size(11.5);
-    if (!a) return shell.child(div().text_color(t.dim).child("Context · no Claude agent in view"));
+    if (!a) return shell.child(div().text_color(t.dim).child("Context · no Claude Code or Codex agent in view"));
     const color = spaceColor(a.space, t);
     if (!d) return shell.child(div().text_color(t.dim).child("Context · reading…"));
-    const pct = Math.min(1, d.used / WINDOW);
+    const size = d.window || WINDOW;
+    const pct = Math.min(1, d.used / size);
     const bar = PathBuilder.fill().add_polygon([["0%", "0%"], [`${pct * 100}%`, "0%"], [`${pct * 100}%`, "100%"], ["0%", "100%"]], true);
     return shell
       .child(h_flex().items_center().gap(6)
         .child(div().text_color(t.dim).child("Context"))
         .child(div().font_semibold().text_color(color).child(`${Math.round(pct * 100)}%`))
         .child(div().flex_1())
-        .child(div().text_color(t.muted).child(`${tokens(d.used)} / ${tokens(WINDOW)}`)))
+        .child(div().text_color(t.muted).child(`${tokens(d.used)} / ${tokens(size)}`)))
       .child(div().relative().h(4).w_full().rounded(2).bg(t.border).overflow_hidden()
         .child(window.paint_path(bar.build(), color).absolute().top(0).left(0).size_full()))
       .when(d.points?.length > 1, (el) => el.child(this.chart(d.points, color, t)));

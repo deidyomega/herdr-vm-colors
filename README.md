@@ -5,7 +5,7 @@ which agent you're about to type into. Each space's color shows on its tab
 pill, its pane header, its Spaces row and its Agents row. Both lists also
 show the agent's session name ("Fix login rate limit") next to the folder,
 and a small panel at the bottom of the sidebar shows how much context the
-Claude Code agent in view has used.
+Claude Code or Codex agent in view has used.
 
 ![VM Colors](preview.png)
 
@@ -32,18 +32,21 @@ every piece.
 
 - **Change a space's color:** click the letter square in front of it in
   the Spaces list. The color cycles through 8 and every surface follows.
-- **Context panel:** focus a Claude Code agent. It shows `used / 1M` and
-  a line of the session so far; drops in the line are compactions.
+- **Context panel:** focus a Claude Code or Codex agent. It shows
+  `used / window` and a line of the session so far; drops in the line are
+  compactions.
 
 ## Good to know
 
 - **It runs commands.** To read context use, the `vm-context` mod runs
-  `hc` and `python3` on the agent's machine and reads Claude Code's own
-  files in `~/.claude/` (session list and transcripts). It doesn't send
+  `hc` and `python3` on the agent's machine and reads the agent's own
+  files (`~/.claude/` session list and transcripts, or `~/.codex/sessions/`
+  logs). It doesn't send
   anything anywhere. It needs `python3` on each machine that runs agents.
-- **It assumes a 1M context window,** which fits current Fable, Opus,
-  Sonnet and Haiku 5.5. Change `WINDOW` in `mods/vm-context/main.js` if
-  you use something smaller.
+- **Claude Code doesn't record its window size,** so the panel assumes 1M,
+  which fits current Fable, Opus, Sonnet and Haiku 5.5 (change `WINDOW` in
+  `mods/vm-context/main.js` if you need to). Codex records its own, and
+  the panel uses that.
 - **It's based on Herdr 0.1.16.** The tab bar, sidebar lists and pane
   header are copies of Herdr's own mods from that version, so fixes Herdr
   makes to those later won't show up here until this repo is refreshed.

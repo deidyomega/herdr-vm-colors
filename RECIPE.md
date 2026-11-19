@@ -5,7 +5,7 @@ its own desktop background so you never type into the wrong one. The color
 fills the space's tab pill, stripes its pane header, and marks its row in
 both the Spaces and Agents lists, which show each agent's session name. A
 small panel at the bottom of the sidebar shows how full the context window
-is for the Claude Code agent in view, with a line of how it grew.
+is for the Claude Code or Codex agent in view, with a line of how it grew.
 
 ![VM Colors](preview.png)
 
@@ -33,11 +33,12 @@ Left to right: a sidebar, then the work area. Built on Herdr 0.1.16's `main` lay
     narrow rail, agent numbers are drawn bold in their color.
   - **Context**, 92 px, with a top border. One line reads `Context`
     (`dim`), then the percentage (semibold, in the space color), a spacer,
-    and `used / 1M` (`muted`). Under it is a 4 px bar: `border` track,
+    and `used / window` (`muted`). Under it is a 4 px bar: `border` track,
     filled to the percentage in the space color. Under that is a 30 px
     line chart of context per reply over the session: a 1.5 px stroke in
     the color over a fill at alpha `26`. Compactions show as cliffs. With
-    no Claude Code agent in view it reads `Context · no Claude agent in view`.
+    no Claude Code or Codex agent in view it reads
+    `Context · no Claude Code or Codex agent in view`.
   - Footer, 69 px (shipped `workspace-chrome` with `footer: true`).
 - **Work area**:
   - **Tab bar**, 48 px (shipped: 42). Pills are 34 px tall, 14 px side
@@ -63,7 +64,7 @@ The eight colors, handed out least-used first: `#2f9e5a` green,
   it through the eight, and every surface follows at once.
 - Agent status looks as shipped: spinner while `working`, "Needs you"
   (`blocked`), a dot for `done`, nothing for `idle`.
-- The Context panel follows the focused Claude Code agent, on any machine.
+- The Context panel follows the focused Claude Code or Codex agent, on any machine.
   It rereads when that agent's status or turn changes, and every 15 s
   while it works. It updates once per reply, not per streamed token.
 - Everything else (drag to reorder spaces, right-click menus, worktrees,
@@ -86,15 +87,21 @@ The eight colors, handed out least-used first: `#2f9e5a` green,
   those for palette hex on first render, and the other mods read either.
 - `mods/vm-context`: a new mod.
   - It reads `agents()` once a second (cheap) to find the focused agent
-    with `app === "claude-code"`.
+    with `app` `claude-code` or `codex`.
   - It runs `hc get <address> --json` to get the `claude` process's
     `foreground.pid`.
-  - It runs `python3 -c <reader.py> <pid>` with `exec(..., { on: machine })`.
+  - It runs `python3 -c <reader.py> <pid> <app>` with `exec(..., { on: machine })`.
   - `reader.py` reads `~/.claude/sessions/<pid>.json` to get `sessionId`,
     then `~/.claude/projects/*/<sessionId>.jsonl`. It sums `input_tokens +
     cache_creation_input_tokens + cache_read_input_tokens` for each
     main-thread assistant reply, keeps the last entry per `requestId`,
     and returns the latest total plus up to 48 points.
+  - For Codex, `reader.py` finds the `~/.codex/sessions/*/*/*/rollout-*.jsonl`
+    log that the process (or a child) holds open, through `/proc/<pid>/fd`.
+    If none is open, it takes the newest log whose `session_meta.cwd` is the
+    process's folder and that was written after the process started. Each
+    `token_count` event gives `info.last_token_usage.total_tokens` as a
+    point and `info.model_context_window` as the window.
   - Drawing uses `window.paint_path` with `PathBuilder` in percent
     coordinates.
 - Shipped pieces it relies on: `workspace-chrome`, `workspace-status`,
@@ -110,11 +117,12 @@ The eight colors, handed out least-used first: `#2f9e5a` green,
 - `vm-context` runs programs (`hc`, `python3`) and reads files outside its
   folder (`~/.claude/sessions`, `~/.claude/projects`) on the agent's
   machine. It needs `python3` there. It sends nothing over the network.
-- The context window is assumed to be 1M (`WINDOW` in
+- For Claude Code the context window is assumed to be 1M (`WINDOW` in
   `mods/vm-context/main.js`). That's right for current Fable, Opus,
-  Sonnet and Haiku 5.5. Haiku 4.5 is 200K.
-- It depends on Claude Code's own session and transcript files, which
-  aren't a public format and could change.
+  Sonnet and Haiku 5.5; Haiku 4.5 is 200K. Codex logs its own window.
+- It depends on Claude Code's and Codex's own session files, which aren't
+  public formats and could change. Finding a Codex log through `/proc`
+  works on Linux only; elsewhere it falls back to the folder match.
 - `PathBuilder` may return a new builder per call: chain the calls
   (`reduce`), don't mutate.
 - Colors are strong on purpose. On a light theme the tinted text (mixed
@@ -128,6 +136,6 @@ The eight colors, handed out least-used first: `#2f9e5a` green,
   stripe, Spaces row and Agents row all show the same color.
 - A Spaces row reads `folder · session name` for a space with an agent.
 - Clicking a space's avatar changes its color everywhere.
-- With a Claude Code agent focused, Context shows a percentage and
+- With a Claude Code or Codex agent focused, Context shows a percentage and
   `N.Nk / 1M` that match the session's last reply, on this machine and on
   a remote one.
