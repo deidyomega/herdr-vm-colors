@@ -13,6 +13,10 @@ const WINDOW = 1_000_000;
 const APPS = new Set(["claude-code", "codex"]);
 // While an agent works, look again this often (ms); otherwise on each change of its status.
 const WORKING_EVERY = 15000;
+// Claude Code only: past this a session gets less sharp, so the bar gets a tick here,
+// the chart a dashed line once a peak comes near it, and the percentage turns amber.
+const SOFT_LIMIT = 500_000;
+const AMBER = "#e5a53a";
 
 const MARK = { ansi6: "#22a99a", ansi3: "#e3814f", ansi4: "#5b8def", ansi5: "#8b7cf6", ansi2: "#3fae6a", ansi1: "#d9649a" };
 function spaceColor(id, t) {
@@ -75,14 +79,21 @@ export default class Context extends View {
     });
   }
 
-  chart(points, color, t) {
-    const max = Math.max(...points) * 1.12 || 1;
+  chart(points, color, soft) {
+    const peak = Math.max(...points);
+    const near = soft && peak >= soft * 0.6;
+    const max = Math.max(peak * 1.12, near ? soft * 1.1 : 0) || 1;
     const n = points.length;
     const xy = points.map((p, i) => [`${n === 1 ? 100 : (i / (n - 1)) * 100}%`, `${100 - (p / max) * 100}%`]);
     const line = xy.slice(1).reduce((b, [x, y]) => b.line_to(x, y), PathBuilder.stroke(1.5).move_to(...xy[0]));
     const area = PathBuilder.fill().add_polygon([...xy, ["100%", "100%"], ["0%", "100%"]], true);
+    const y = `${100 - (soft / max) * 100}%`;
+    // Dashes: 40 of them, each half a step long.
+    const dash = near && Array.from({ length: 40 }, (_, i) => i * 2.5)
+      .reduce((b, x) => b.move_to(`${x}%`, y).line_to(`${x + 1.25}%`, y), PathBuilder.stroke(1));
     return div().relative().h(30).w_full()
       .child(window.paint_path(area.build(), color + "26").absolute().top(0).left(0).size_full())
+      .when(Boolean(dash), (el) => el.child(window.paint_path(dash.build(), AMBER + "aa").absolute().top(0).left(0).size_full()))
       .child(window.paint_path(line.build(), color).absolute().top(0).left(0).size_full());
   }
 
@@ -96,15 +107,18 @@ export default class Context extends View {
     if (!d) return shell.child(div().text_color(t.dim).child("Context · reading…"));
     const size = d.window || WINDOW;
     const pct = Math.min(1, d.used / size);
+    const soft = a.app === "claude-code" && size > SOFT_LIMIT ? SOFT_LIMIT : null;
+    const tick = soft && PathBuilder.stroke(1.5).move_to(`${(soft / size) * 100}%`, "0%").line_to(`${(soft / size) * 100}%`, "100%");
     const bar = PathBuilder.fill().add_polygon([["0%", "0%"], [`${pct * 100}%`, "0%"], [`${pct * 100}%`, "100%"], ["0%", "100%"]], true);
     return shell
       .child(h_flex().items_center().gap(6)
         .child(div().text_color(t.dim).child("Context"))
-        .child(div().font_semibold().text_color(color).child(`${Math.round(pct * 100)}%`))
+        .child(div().font_semibold().text_color(soft && d.used > soft ? AMBER : color).child(`${Math.round(pct * 100)}%`))
         .child(div().flex_1())
         .child(div().text_color(t.muted).child(`${tokens(d.used)} / ${tokens(size)}`)))
       .child(div().relative().h(4).w_full().rounded(2).bg(t.border).overflow_hidden()
-        .child(window.paint_path(bar.build(), color).absolute().top(0).left(0).size_full()))
-      .when(d.points?.length > 1, (el) => el.child(this.chart(d.points, color, t)));
+        .child(window.paint_path(bar.build(), color).absolute().top(0).left(0).size_full())
+        .when(Boolean(tick), (el) => el.child(window.paint_path(tick.build(), AMBER).absolute().top(0).left(0).size_full())))
+      .when(d.points?.length > 1, (el) => el.child(this.chart(d.points, color, soft)));
   }
 }

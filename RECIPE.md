@@ -38,6 +38,10 @@ Left to right: a sidebar, then the work area. Built on Herdr 0.1.16's `main` lay
     filled to the percentage in the space color. Under that is a 30 px
     line chart of context per reply over the session: a 1.5 px stroke in
     the color over a fill at alpha `26`. Compactions show as cliffs. With
+    For Claude Code only, the bar has a 1.5 px amber (`#e5a53a`) tick at
+    500k, the percentage turns amber once the session passes 500k, and
+    once a peak reaches 300k the chart's scale stretches to fit a dashed
+    amber line at 500k. Codex windows are under that already. With
     no Claude Code or Codex agent in view it reads
     `Context · no Claude Code or Codex agent in view`.
   - Footer, 69 px (shipped `workspace-chrome` with `footer: true`).

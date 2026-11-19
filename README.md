@@ -34,7 +34,11 @@ every piece.
   the Spaces list. The color cycles through 8 and every surface follows.
 - **Context panel:** focus a Claude Code or Codex agent. It shows
   `used / window` and a line of the session so far; drops in the line are
-  compactions.
+  compactions. The line is scaled to the session's own peak, not the
+  window. For Claude Code, an amber tick on the bar marks 500k (sessions
+  get less sharp past there), the chart shows a dashed amber line at 500k
+  once a peak gets near it, and the percentage turns amber past it.
+  Change `SOFT_LIMIT` in `mods/vm-context/main.js` to move it.
 
 ## Good to know
 
