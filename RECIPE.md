@@ -23,8 +23,9 @@ Left to right: a sidebar, then the work area. Built on Herdr 0.1.16's `main` lay
     mixed 45% toward white, medium weight. A space with no agent title
     shows its git tail instead (repo · branch ↑ahead ↓behind, as shipped).
     The active row gets the color at alpha `38` as its background, and a
-    hovered row gets alpha `1f`. Worktree spaces sit under their repo's
-    row behind a branch glyph, with the same bar.
+    hovered row gets alpha `1f`. Every space is its own flat row in the
+    order you put them, worktrees too: unlike shipped `spaces`, a worktree
+    is never tucked under its main checkout's row.
   - **Agents**, grouped by status (or by space, pinned, as shipped). Each
     row gets a 3 px left bar in its space's color. The session name after
     ` · ` is in the color mixed 45% toward white. The focused agent's row

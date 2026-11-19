@@ -1,4 +1,4 @@
-// Workspace spaces: stable colored avatars, worktrees under their checkout,
+// Workspace spaces: stable colored avatars, one flat row per space,
 // grouped by machine when more than one is known. After a space's name, the repo
 // its first terminal is in now, only where unusual: branch, ahead/behind. Agent state lives in the agents list, not here. Click to
 // switch, right-click for its menu, drag to reorder.
@@ -317,14 +317,15 @@ export default class Spaces extends View {
       && this.ordering.machines.every(name => machines().some(m => m.name === name && m.layout === "ready"));
   }
 
-  // Spaces in order, each worktree space moved under its main checkout's.
+  // Spaces in the order you put them.
   ordered() {
     const sp = spaces(), ps = panes();
     const ready = (w) => this.shown.has(w.id) || where(w, ps) in this.git || Date.now() - (this.born[w.id] ??= Date.now()) > 1500;
     for (const w of sp) if (!this.shown.has(w.id) && ready(w)) this.shown.add(w.id);
     const list = sp.map((w, i) => ({ w, i, g: this.git[where(w, ps)] ?? null }));
-    const mains = new Set(list.filter((r) => r.g && !r.g.linked).map((r) => r.g.repo));
-    const nested = (r) => r.g?.linked && mains.has(r.g.repo);
+    // VM Colors: every space is its own flat row with its own color, worktree or not
+    // (the shipped mod tucks worktrees under their main checkout's row).
+    const nested = () => false;
     const out = [];
     const placed = new Set(); // repos whose worktrees are listed (under the first of its spaces)
     for (const r of list) {
