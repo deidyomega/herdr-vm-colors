@@ -1,0 +1,100 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1000" viewBox="0 0 1600 1000" font-family="Geist, Inter, 'Segoe UI', sans-serif">
+  <!-- VM Colors: every space wears one strong color on its tab, pane header, sidebar row and agent row. -->
+  <rect width="1600" height="1000" fill="#0e0f12"/>
+
+  <!-- sidebar -->
+  <rect width="420" height="1000" fill="#141519"/>
+  <line x1="420" y1="0" x2="420" y2="1000" stroke="#262830"/>
+  <rect x="22" y="20" width="22" height="22" rx="5" fill="#e8e8ea"/>
+  <text x="56" y="37" font-size="17" font-weight="600" fill="#e8e8ea">Herdr</text>
+
+  <text x="22" y="88" font-size="13" fill="#6c6f7a">Spaces</text>
+  <text x="22" y="122" font-size="12.5" fill="#6c6f7a">This computer</text>
+
+  <!-- space: dotfiles (purple) -->
+  <rect x="12" y="136" width="396" height="36" rx="8" fill="#8a63d2" fill-opacity="0"/>
+  <rect x="12" y="139" width="3" height="30" rx="1.5" fill="#8a63d2"/>
+  <rect x="26" y="145" width="18" height="18" rx="5" fill="#8a63d2"/><text x="35" y="158.5" font-size="11" font-weight="700" fill="#fff" text-anchor="middle">~</text>
+  <text x="56" y="159" font-size="15" fill="#9a9da8">~</text><text x="72" y="159" font-size="15" fill="#6c6f7a">·</text>
+  <text x="86" y="159" font-size="15" font-weight="500" fill="#c4b1e9">Dotfiles cleanup</text>
+
+  <text x="22" y="200" font-size="12.5" fill="#6c6f7a">devbox</text>
+  <!-- space: api-server (green) -->
+  <rect x="12" y="216" width="3" height="30" rx="1.5" fill="#2f9e5a"/>
+  <rect x="26" y="222" width="18" height="18" rx="5" fill="#2f9e5a"/><text x="35" y="235.5" font-size="11" font-weight="700" fill="#fff" text-anchor="middle">A</text>
+  <text x="56" y="236" font-size="15" fill="#9a9da8">api-server</text><text x="137" y="236" font-size="15" fill="#6c6f7a">·</text>
+  <text x="151" y="236" font-size="15" font-weight="500" fill="#9bcfaf">Fix login rate limit</text>
+  <!-- worktree: payments-v2 (blue, active) -->
+  <rect x="12" y="254" width="396" height="36" rx="8" fill="#3b7ddd" fill-opacity="0.22"/>
+  <rect x="12" y="257" width="3" height="30" rx="1.5" fill="#3b7ddd"/>
+  <text x="46" y="277" font-size="14" fill="#6c6f7a">⑂</text>
+  <text x="66" y="277" font-size="15" fill="#9a9da8">payments-v2</text><text x="160" y="277" font-size="15" fill="#6c6f7a">·</text>
+  <text x="174" y="277" font-size="15" font-weight="500" fill="#a4c2ef">Stripe webhook retries</text>
+  <!-- space: marketing-site (orange) -->
+  <rect x="12" y="298" width="3" height="30" rx="1.5" fill="#d9822b"/>
+  <rect x="26" y="304" width="18" height="18" rx="5" fill="#d9822b"/><text x="35" y="317.5" font-size="11" font-weight="700" fill="#fff" text-anchor="middle">M</text>
+  <text x="56" y="318" font-size="15" fill="#9a9da8">marketing-site</text><text x="166" y="318" font-size="15" fill="#6c6f7a">·</text>
+  <text x="180" y="318" font-size="15" font-weight="500" fill="#ecbf91">Pricing page copy</text>
+
+  <!-- agents -->
+  <line x1="0" y1="560" x2="420" y2="560" stroke="#262830"/>
+  <text x="22" y="596" font-size="13" fill="#6c6f7a">Agents</text>
+  <text x="22" y="630" font-size="13" fill="#e5a53a">Working</text><text x="82" y="630" font-size="13" fill="#6c6f7a">2</text>
+  <g font-size="14.5">
+    <rect x="12" y="642" width="3" height="30" rx="1.5" fill="#3b7ddd"/>
+    <rect x="12" y="642" width="396" height="30" rx="8" fill="#3b7ddd" fill-opacity="0.22"/>
+    <text x="30" y="662" fill="#e8e8ea">payments-v2</text><text x="122" y="662" font-weight="500" fill="#a4c2ef">· Stripe webhook retries</text>
+    <circle cx="390" cy="657" r="6" fill="none" stroke="#e5a53a" stroke-width="2" stroke-dasharray="26 12"/>
+    <rect x="12" y="680" width="3" height="30" rx="1.5" fill="#8a63d2"/>
+    <text x="30" y="700" fill="#e8e8ea">~</text><text x="46" y="700" font-weight="500" fill="#c4b1e9">· Dotfiles cleanup</text>
+    <circle cx="390" cy="695" r="6" fill="none" stroke="#e5a53a" stroke-width="2" stroke-dasharray="26 12"/>
+  </g>
+  <text x="22" y="742" font-size="13" fill="#6c6f7a">Idle</text><text x="56" y="742" font-size="13" fill="#6c6f7a">2</text>
+  <g font-size="14.5">
+    <rect x="12" y="754" width="3" height="30" rx="1.5" fill="#2f9e5a"/>
+    <text x="30" y="774" fill="#9a9da8">api-server</text><text x="106" y="774" font-weight="500" fill="#9bcfaf">· Fix login rate limit</text>
+    <rect x="12" y="792" width="3" height="30" rx="1.5" fill="#d9822b"/>
+    <text x="30" y="812" fill="#9a9da8">marketing-site</text><text x="138" y="812" font-weight="500" fill="#ecbf91">· Pricing page copy</text>
+  </g>
+
+  <!-- context -->
+  <line x1="0" y1="846" x2="420" y2="846" stroke="#262830"/>
+  <text x="22" y="872" font-size="13" fill="#6c6f7a">Context</text>
+  <text x="80" y="872" font-size="13" font-weight="600" fill="#3b7ddd">31%</text>
+  <text x="398" y="872" font-size="13" fill="#9a9da8" text-anchor="end">312.4k / 1M</text>
+  <rect x="22" y="882" width="376" height="5" rx="2.5" fill="#262830"/>
+  <rect x="22" y="882" width="117" height="5" rx="2.5" fill="#3b7ddd"/>
+  <path d="M22 935 L50 930 L78 926 L106 921 L134 915 L162 910 L190 904 L218 898 L246 895 L262 893 L266 931 L294 928 L322 924 L350 919 L378 914 L398 911 L398 940 L22 940 Z" fill="#3b7ddd" fill-opacity="0.18"/>
+  <path d="M22 935 L50 930 L78 926 L106 921 L134 915 L162 910 L190 904 L218 898 L246 895 L262 893 L266 931 L294 928 L322 924 L350 919 L378 914 L398 911" fill="none" stroke="#3b7ddd" stroke-width="1.8"/>
+  <line x1="0" y1="954" x2="420" y2="954" stroke="#262830"/>
+  <text x="22" y="982" font-size="14" fill="#9a9da8">⚙  Settings</text>
+
+  <!-- tab bar -->
+  <rect x="421" y="0" width="1179" height="62" fill="#141519"/>
+  <line x1="421" y1="62" x2="1600" y2="62" stroke="#262830"/>
+  <rect x="436" y="12" width="300" height="38" rx="8" fill="#3b7ddd" fill-opacity="0.35" stroke="#3b7ddd" stroke-width="2"/>
+  <text x="456" y="37" font-size="17" font-weight="600" fill="#b1cbf1">Stripe webhook retries</text>
+  <text x="712" y="37" font-size="14" fill="#b1cbf1">×</text>
+  <text x="1440" y="37" font-size="14" fill="#9a9da8">Files</text>
+  <text x="1500" y="37" font-size="14" fill="#9a9da8">Changes</text>
+
+  <!-- pane -->
+  <rect x="432" y="74" width="1156" height="900" rx="10" fill="#17181c" stroke="#3b7ddd"/>
+  <path d="M442 74 H1578 A10 10 0 0 1 1588 84 V112 H432 V84 A10 10 0 0 1 442 74 Z" fill="#3b7ddd" fill-opacity="0.15"/>
+  <rect x="432" y="80" width="4" height="32" fill="#3b7ddd"/>
+  <line x1="432" y1="112" x2="1588" y2="112" stroke="#3b7ddd"/>
+  <text x="452" y="98" font-size="13.5" font-weight="500" fill="#e8e8ea">Claude Code</text>
+  <text x="548" y="98" font-size="13.5" fill="#6c6f7a">~/api-server/.worktrees/payments-v2</text>
+
+  <g font-family="'JetBrains Mono', 'DejaVu Sans Mono', monospace" font-size="16" fill="#c9cad1">
+    <text x="458" y="160">● Retries now back off 1s, 4s, 16s, then park the event in the dead-letter table.</text>
+    <text x="458" y="200" fill="#6c6f7a">  Ran 3 shell commands</text>
+    <text x="458" y="240">● All 42 webhook tests pass. Two notes before I push:</text>
+    <text x="478" y="280">1. The idempotency key now includes the event version.</text>
+    <text x="478" y="312">2. Parked events show up in the admin under Payments › Stuck.</text>
+    <text x="458" y="352" fill="#6c6f7a">✻ Worked for 3m 12s</text>
+    <line x1="458" y1="880" x2="1566" y2="880" stroke="#33353d"/>
+    <text x="458" y="912" fill="#e8e8ea">❯ ship it</text>
+    <line x1="458" y1="930" x2="1566" y2="930" stroke="#33353d"/>
+  </g>
+</svg>
